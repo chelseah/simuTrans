@@ -100,10 +100,10 @@ def fitlc_parse(options):
         try:
             freeargs=p.get('Section FreeParameters',freeparams[i]).split(',')
             if len(freeargs)==3:
-                val,upper,lower=freeargs
+                val,lower,upper=freeargs
                 options.params.append(parameter(float(val),float(upper),float(lower),freeparams[i],fitflag=1))
             elif len(freeargs)==5:
-                val,upper,lower,xmin,xmax=freeargs
+                val,lower,upper,xmin,xmax=freeargs
                 options.params.append(parameter(float(val),float(upper),float(lower),freeparams[i],fitflag=1,xmin=xmin,xmax=xmax))
             else:
                 raise ValueError

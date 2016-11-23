@@ -1,4 +1,4 @@
-#include "Laramodel.h"
+#include "LaraModel.h"
 LaraModel::LaraModel(double fratio,double phi,double Req,  double ggraveq, double groteq):fratio_(fratio),phi_(phi),Req_(Req),ggraveq_(ggraveq),groteq_(groteq){
   //quad2d = new QuadTwoD(*this);
   pi_=3.1415926535897931;

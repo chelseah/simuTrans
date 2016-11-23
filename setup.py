@@ -13,13 +13,13 @@ _simplemodel = Extension("_simplemodel",
         include_dirs = [numpy_include],
         )
 _ZeipelModel = Extension("_ZeipelModel",
-        ["Zeipelmodel_wrap.cxx",
-            "Zeipelmodel.cpp"],
+        ["ZeipelModel_wrap.cxx",
+            "ZeipelModel.cpp"],
         include_dirs = [numpy_include],
         )
 _LaraModel = Extension("_LaraModel",
-        ["Laramodel_wrap.cxx",
-            "Laramodel.cpp"],
+        ["LaraModel_wrap.cxx",
+            "LaraModel.cpp"],
         include_dirs = [numpy_include],
         )
 

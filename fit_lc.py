@@ -177,8 +177,8 @@ class Params(object):
             try:
                 fig=plt.figure()
                 ax=fig.add_subplot(111)
-                ax.plot(lcdata[i].jd,lcdata[i].mag,'.')
-                ax.plot(lcdata[i].jd,1-model_lc,'.')
+                #ax.plot(lcdata[i].jd,lcdata[i].mag,'.')
+                ax.plot(lcdata[i].jd,model_lc,'.')
                 #ax.plot(lcdata[i].jd,1-model_lc+np.median(lcdata[i].mag)-lcdata[i].mag,'+')
                 #ax.plot(lcdata[i].jd,model_lc-1+np.median(lcdata[i].mag)-lcdata[i].mag,'+')
                 #ax.plot(lcdata[i].jd,1-model_lc+np.median(lcdata[i].mag),'+')
@@ -276,7 +276,6 @@ def main():
         global matplotlib
         global plt
     cfg.fitlc_parse(options)
-
     #print options
     #return
     fitparams=Params(options)
@@ -294,7 +293,6 @@ def main():
     #print "after del"
     #print "end of check_init"
     #return
-
     if not options.plot:
         MC.run_mcmc(fitparams,lcdata)
     return

@@ -159,8 +159,8 @@ void SimpleModel::RelativeFlux(double *phase, int np, double *flux_out, int npo)
           continue;
         }
 
-				planet_position_x = this->semi_major*sin(phase[a])*cos(this->obliquity); // Centre of planet x
-				planet_position_y = ((1.-this->star_flattening)*this->impact_parameter) + (sin(this->obliquity)* this->semi_major*sin(phase[a])); // Centre of planet y
+				planet_position_x = this->semi_major*sin(phase[a])*cos(this->obliquity)-((1-this->star_flattening)*this->impact_parameter)*sin(this->obliquity); // Centre of planet x
+				planet_position_y = ((1.-this->star_flattening)*this->impact_parameter)*cos(this->obliquity) + (sin(this->obliquity)* this->semi_major*sin(phase[a])); // Centre of planet y
 				theta = atan2(planet_position_y, planet_position_x); // Angle between planet centre and star centre
         //printf("%d %f %f %f\n",a,planet_position_x,planet_position_y,theta);
 				float d_to_p = sqrt(pow(planet_position_x,2)+pow(planet_position_y,2)); // Distance to planet centre from star centre

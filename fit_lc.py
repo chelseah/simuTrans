@@ -145,8 +145,10 @@ class Params(object):
         return model_lc
     def model(self,jd,cadence=1./60./24.):
         if self.almosteq(cadence,1./60./24):
+            #print "use original cadence"
             shortcadence=jd
         else:
+            #print "try to get short cadence"
             shortcadence=self.getshortcadence(jd,cadence)
         phase=self.cal_phase(shortcadence)
         #phase=np.arcsin((np.arange(50)-25.)/25.*0.75/5000.)
@@ -177,18 +179,12 @@ class Params(object):
             try:
                 fig=plt.figure()
                 ax=fig.add_subplot(111)
-                ax.plot(lcdata[i].jd,lcdata[i].mag,'.')
-                ax.plot(lcdata[i].jd,1-model_lc,'.')
-                #ax.plot(lcdata[i].jd,1-model_lc+np.median(lcdata[i].mag)-lcdata[i].mag,'+')
-                #ax.plot(lcdata[i].jd,model_lc-1+np.median(lcdata[i].mag)-lcdata[i].mag,'+')
-                #ax.plot(lcdata[i].jd,1-model_lc+np.median(lcdata[i].mag),'+')
-                #ax.plot(lcdata[i].jd,model_lc-1+np.median(lcdata[i].mag),'+')
-                #phase=self.cal_phase(lcdata[i].jd)
-                #ax.plot(lcdata[i].jd,1-model_lc,'+')
-                #ax.plot(phase,1-model_lc,'+')
-                #phase=self.cal_phase(lcdata[i].jd)/2./np.pi*self.readpara('P').val*3600.*24.
-                #ax.plot(phase,model_lc,'+')
-                #ax.set_xlim([-8000,8000])
+                phase=self.cal_phase(lcdata[i].jd)
+                #ax.plot(lcdata[i].jd,lcdata[i].mag,'.')
+                #ax.plot(lcdata[i].jd,1-model_lc,'.')
+                ax.plot(phase,lcdata[i].mag-np.median(lcdata[i].mag),'.')
+                ax.plot(phase,1-model_lc,'.')
+                
                 y_formatter = matplotlib.ticker.ScalarFormatter(useOffset=False)
                 ax.yaxis.set_major_formatter(y_formatter)
                 plt.show()

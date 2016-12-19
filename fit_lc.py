@@ -178,21 +178,28 @@ class Params(object):
             #    print lcdata[i].jd[l],model_lc[l]
             try:
                 fig=plt.figure()
-                ax1=fig.add_subplot(121)
-                ax1.plot(lcdata[i].jd,model_lc,'.')
-                ax2=fig.add_subplot(122)
+                ax = fig.add_subplot(111)
                 phase=self.cal_phase(lcdata[i].jd)
+                ax.plot(phase,-lcdata[i].mag+1.,'.',color='b')
+                ax.plot(phase,model_lc,'.',color='r')
+                #ax.plot(phase,-lcdata[i].mag+1.-model_lc,'.',color='b')
+                
+                #ax1=fig.add_subplot(121)
+                #ax1.plot(lcdata[i].jd,model_lc,'.')
+                
+                #ax2=fig.add_subplot(122)
                 #ax.plot(lcdata[i].jd,lcdata[i].mag,'.')
                 #ax.plot(lcdata[i].jd,1-model_lc,'.')
-                ax2.plot(phase,lcdata[i].mag-np.median(lcdata[i].mag),'.')
-                ax2.plot(phase,1-model_lc,'.')
+                #ax2.plot(phase,lcdata[i].mag-np.median(lcdata[i].mag),'.')
+                #ax2.plot(phase,1-model_lc,'.')
                 
                 y_formatter = matplotlib.ticker.ScalarFormatter(useOffset=False)
-                ax1.yaxis.set_major_formatter(y_formatter)
-                ax2.yaxis.set_major_formatter(y_formatter)
+                ax.yaxis.set_major_formatter(y_formatter)
+                #ax2.yaxis.set_major_formatter(y_formatter)
                 plt.show()
                 model_lc=1.-model_lc
                 x0 = [np.median(lcdata[i].mag)]
+                np.savetxt('model_plotting_output_398-402.txt', np.transpose(np.array((lcdata[i].jd, lcdata[i].mag, model_lc, lcdata[i].mag-model_lc))))
                 
                 def minfunc(x0):
                     flux_ii = lcdata[i].mag + x0[0]
@@ -286,14 +293,16 @@ def main():
     #lcdata[0].plot()
     starttime=time.time()
     fitparams.check_init(lcdata)
-    print '#',time.time()-starttime
+    print '#RUNTIME:',time.time()-starttime,'s'
     #print "before del"
     #del fitparams.transitmodel
     #print "after del"
     #print "end of check_init"
     #return
     if not options.plot:
+        startt = time.time()
         MC.run_mcmc(fitparams,lcdata)
+        print '#RUNTIME:',str((time.time()-startt)/3600.)[:6],'hr'
     return
 if __name__=='__main__':
     main()

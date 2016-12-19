@@ -13,9 +13,9 @@ class lightcurve(object):
         self.cadence=cadence
         if err is None:
             if np.abs(cadence-1./60./24.)<1.e-7:
-                self.err=np.zeros(len(jd))+2.7e-4
+                self.err=np.zeros(len(jd))+1.8e-4
             else:
-                self.err=np.zeros(len(jd))+2.7e-4/(cadence*60.*24.)**0.5
+                self.err=np.zeros(len(jd))+1.8e-4/(cadence*60.*24.)**0.5
         else:
             self.err=err
         return
@@ -53,10 +53,11 @@ def read_lc(options):
                 continue
             infile,cadence=line.rstrip().split()
             infile=options.lc.inpath+'/'+infile
+            print infile
             if not os.path.exists(infile):
                 raise IOError, "the light curve file %s does not exist." % infile
-
+            print infile, 'last part'
             jd,mag=np.loadtxt(infile,usecols=(options.lc.coljd-1,options.lc.colmag-1),unpack=True)
-            lcdata.append(lightcurve(jd,mag,description=infile,cadence=float(cadence)))
+            lcdata.append(lightcurve(jd,mag,description=infile,cadence=float(eval(cadence))))
     return lcdata
 

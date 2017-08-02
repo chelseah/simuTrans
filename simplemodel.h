@@ -44,6 +44,7 @@ class SimpleModel{
 		void SetupStar(double *star_params, int np);
 		void SetupPlanet(double *planet_params, int np);
 		void RelativeFlux(double *phase, int np, double *flux_out, int npo);
+		double impact_parameter;
 	private:
 		double *star_flux_map;
 		double *planet_oppacity_map;
@@ -52,7 +53,6 @@ class SimpleModel{
 		double star_pixel_size;
 		double planet_pixel_size;
 		double semi_major;
-		double impact_parameter;
 		double obliquity;
 		double planet_flattening;
 		double star_flattening;

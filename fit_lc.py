@@ -49,7 +49,7 @@ class Params(object):
             if self.paramarr[i].name=='q1':
                 self.qflag=True
         self.paradic=dict(zip(keyarr,vararr))
-        self.requiredpara={'star_gridsize':1000,'u1':0.0,'u2':0.0,'gd_beta':0.0,'star_f':0.0,'phi':0.0,'Mstar':1.0,'Rstar':1.0,'Prot':8.4,'planet_gridsize':200,'b':0,'Rratio':0.1,'sma':0.03,'lambda':0.0,'e':0.0,'planet_f':0.0,'gd_flag':1,'P':3.0,'T0':0.0,'b2':0} 
+        self.requiredpara={'star_gridsize':1000,'u1':0.0,'u2':0.0,'gd_beta':0.0,'star_f':0.0,'phi':0.0,'Mstar':1.0,'Rstar':1.0,'Prot':8.4,'planet_gridsize':200,'b0':0,'Rratio':0.1,'sma':0.03,'lambda':0.0,'e':0.0,'planet_f':0.0,'gd_flag':1,'P':3.0,'T0':0.0, 'dbdt':0} 
         self.checkparam()
         self.transitmodel=PickalableC(int(self.readpara('star_gridsize').val), int(self.readpara('planet_gridsize').val))
         return
@@ -86,20 +86,7 @@ class Params(object):
                 self.paradic['u1']=len(self.paramarr)-1 
                 self.paramarr.append(parameter(u2,0.,0.,'u2'))
                 self.paradic['u2']=len(self.paramarr)-1
-        if 'b2' not in self.paradic:
-            if 'b' not in self.paradic:
-                self.paramarr.append(parameter(self.requiredpara['b'],0.,0.,'b'))
-                self.paramarr.append(parameter(self.requiredpara['b2'],0.,0.,'b2'))
-            else:
-                para_b=copy.deepcopy(self.readpara('b'))
-                para_b2=parameter(para_b.val**2.,para_b.upper**2.,para_b.lower**2.,'b2',fitflag=para_b.fitflag,xmin=0,xmax=1)
-                if para_b.fitflag==1:
-                    #print self.paradic['b']
-                    self.paramarr[int(self.paradic['b'])]=para_b2
-                    self.paradic['b2']=self.paradic['b']
-                    #self.paramarr.append(para_b)
-                    #self.paradic['b']=len(self.paramarr)-1
-                    #self.readpara('b').fitflag=0
+        
         for key,value in self.requiredpara.iteritems():
             if key not in self.paradic:
                 self.paramarr.append(parameter(value,0.,0.,key))
@@ -119,8 +106,8 @@ class Params(object):
         #qflag=False
         for i in xrange(self.lenfree):
             self.paramarr[i].val=freeparamarr[i]
-        #    if self.paramarr[i].name=='q1':
-        #        qflag=True
+            if self.paramarr[i].name=='b0':
+                self.paramarr[i].val = np.abs(freeparamarr[i]) 
         if self.qflag:
             u1,u2=self.cal_LD_qtou(self.readpara('q1').val,self.readpara('q2').val)
             self.readpara('u1').val=u1
@@ -151,22 +138,31 @@ class Params(object):
             #print "try to get short cadence"
             shortcadence=self.getshortcadence(jd,cadence)
         phase=self.cal_phase(shortcadence)
-        #phase=np.arcsin((np.arange(50)-25.)/25.*0.75/5000.)
-        #print phase
-
+        ntransit=self.get_ntransit(shortcadence)
         model_sc=np.zeros(len(phase))
-        #print type(phase),type(model_lc)
-        self.transitmodel.RelativeFlux(phase,model_sc)
+        for i in np.unique(ntransit):
+            impact_parameter = np.abs(self.readpara('b0').val + self.readpara('dbdt').val*ntransit[i])
+            #print type(phase),type(model_lc)
+            index = ntransit == i
+            self.transitmodel.impact_parameter = impact_parameter
+            self.transitmodel.RelativeFlux(phase[index],model_sc[index])
         if self.almosteq(cadence,1./60./24):
             return model_sc
         else:
             model_lc=self.getlc(jd,cadence,shortcadence,model_sc)
             return model_lc
+
+    def get_ntransit(self,jd):
+        #calculate the phase of the planet orbit from the cadence
+        period=self.readpara('P').val
+        epoch=self.readpara('T0').val
+        ntransit=np.round((jd-epoch)/period).astype(int)
+        return ntransit
+
     def cal_phase(self,jd):
         #calculate the phase of the planet orbit from the cadence
         period=self.readpara('P').val
         epoch=self.readpara('T0').val
-#phase=np.pi*((cadence-epoch)/period-np.round((cadence-epoch)/period))
         phase=np.pi*2.*((jd-epoch)/period-np.round((jd-epoch)/period))
         return phase 
 
@@ -219,7 +215,7 @@ class Params(object):
         #return
         #print np.array([self.readpara('star_gridsize').val,self.readpara('u1').val,self.readpara('u2').val,self.readpara('star_f').val,self.readpara('phi').val*np.pi/180.,groteq,self.readpara('gd_beta').val,self.readpara('gd_flag').val])
         self.transitmodel.SetupStar(np.array([self.readpara('star_gridsize').val,self.readpara('u1').val,self.readpara('u2').val,self.readpara('star_f').val,self.readpara('phi').val*np.pi/180.,groteq,self.readpara('gd_beta').val,self.readpara('gd_flag').val]))
-        self.transitmodel.SetupPlanet(np.array([self.readpara('planet_gridsize').val,np.sqrt(self.readpara('b2').val),self.readpara('Rratio').val,1./self.readpara('sma').val,self.readpara('lambda').val*np.pi/180.,self.readpara('e').val, self.readpara('planet_f').val]))
+        self.transitmodel.SetupPlanet(np.array([self.readpara('planet_gridsize').val,self.readpara('b0').val,self.readpara('Rratio').val,1./self.readpara('sma').val,self.readpara('lambda').val*np.pi/180.,self.readpara('e').val, self.readpara('planet_f').val]))
         return
 
     def checkbound(self):
@@ -230,8 +226,10 @@ class Params(object):
                 if self.paramarr[i].val<self.paramarr[i].xmin:
                     self.paramarr[i].val=self.paramarr[i].val+180.*int((-self.paramarr[i].val+self.paramarr[i].xmax)/180.)
                 continue
+            
             if self.paramarr[i].val>self.paramarr[i].xmax or self.paramarr[i].val<self.paramarr[i].xmin:
                 return False
+
         return True
 
     def lc_chisq(self,freeparamarr,lcdata):

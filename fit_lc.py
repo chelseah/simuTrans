@@ -141,7 +141,7 @@ class Params(object):
         ntransit=self.get_ntransit(shortcadence)
         model_sc=np.zeros(len(phase))
         for i in np.unique(ntransit):
-            impact_parameter = np.abs(self.readpara('b0').val + self.readpara('dbdt').val*ntransit[i])
+            impact_parameter = np.abs(self.readpara('b0').val + self.readpara('dbdt').val*i)
             #print type(phase),type(model_lc)
             index = ntransit == i
             self.transitmodel.impact_parameter = impact_parameter

@@ -108,7 +108,7 @@ def fitlc_parse(options):
             else:
                 raise ValueError
         except ValueError:
-            raise ValueError,'Free Parameters %s need to be given as val,upper,lower (,xmin,xmax) format in configure file' % freeparams[i]
+            raise ValueError,'Free Parameters %s need to be given as val,lower,upper,(xmin,xmax) format in configure file' % freeparams[i]
 
     fixparams=p.get('Section FixedParameters','fixparams').split(',')
     for i in xrange(len(fixparams)):

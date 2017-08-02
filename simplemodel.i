@@ -14,11 +14,11 @@ import_array();
 %{
 #include "simplemodel.h"
 #include "GDmodel.h"
-#include "Laramodel.h"
-#include "Zeipelmodel.h"
+#include "LaraModel.h"
+#include "ZeipelModel.h"
 %}
 
 %include "simplemodel.h"
 %include "GDmodel.h"
-%include "Laramodel.h"
-%include "Zeipelmodel.h"
+%include "LaraModel.h"
+%include "ZeipelModel.h"

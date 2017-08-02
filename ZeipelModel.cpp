@@ -1,4 +1,4 @@
-#include "Zeipelmodel.h"
+#include "ZeipelModel.h"
 ZeipelModel::ZeipelModel(double fratio,double phi,double Req,  double ggraveq, double groteq):fratio_(fratio),phi_(phi),Req_(Req),ggraveq_(ggraveq),groteq_(groteq){
 }
 

@@ -1,7 +1,7 @@
 #include "simplemodel.h"
 #include "GDmodel.h"
-#include "Zeipelmodel.h"
-#include "Laramodel.h"
+#include "ZeipelModel.h"
+#include "LaraModel.h"
 
 SimpleModel::SimpleModel(int star_grid_size, int planet_grid_size){
 

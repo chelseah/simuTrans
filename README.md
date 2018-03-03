@@ -1,6 +1,12 @@
 # simuTrans
 Exoplanet transit simulator.
 
+INSTALL: 
+
+dependence: libgsl 
+
+make 
+
 
 Example 
 
